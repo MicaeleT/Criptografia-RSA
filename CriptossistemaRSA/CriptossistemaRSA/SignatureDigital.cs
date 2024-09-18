@@ -1,10 +1,12 @@
 ﻿
+using System.Diagnostics;
 using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
+using Twilio.TwiML.Voice;
 using Twilio.Types;
 using Vonage;
 using Vonage.Messaging;
@@ -41,11 +43,17 @@ public class SignatureDigital
 
     public static (string publicKey, string privateKey) GenerateKeys()
     {
+        Stopwatch time = new();
+        time.Start();
+        
         using (var rsa = new RSACryptoServiceProvider(2048))
         {
             string privateKey = Convert.ToBase64String(rsa.ExportRSAPrivateKey());
 
             string publicKey = Convert.ToBase64String(rsa.ExportRSAPublicKey());
+
+            time.Stop();
+            Console.WriteLine(time.ElapsedMilliseconds);
 
             return (publicKey, privateKey);
         }
@@ -99,6 +107,8 @@ public class SignatureDigital
 
     public static byte[] CifraMessage(string message, string publicKey)
     {
+        Stopwatch time = new();
+        time.Start();
         byte[] messageH = Encoding.UTF8.GetBytes(message);
         byte[] publicKeyH = Convert.FromBase64String(publicKey);
 
@@ -107,12 +117,18 @@ public class SignatureDigital
             rsa.ImportRSAPublicKey(publicKeyH, out _);
 
             var cifraMessage = rsa.Encrypt(messageH, RSAEncryptionPadding.Pkcs1);
+
+            time.Stop();
+            Console.WriteLine(time.ElapsedMilliseconds);
             return cifraMessage;
         }
     }
 
     public static string DecifraMessage(byte[] cifraMessage, string privateKey)
     {
+        Stopwatch time = new();
+
+        time.Start();
         byte[] privateKeyH = Convert.FromBase64String(privateKey);
 
         using (var rsa = new RSACryptoServiceProvider())
@@ -120,6 +136,9 @@ public class SignatureDigital
             rsa.ImportRSAPrivateKey(privateKeyH, out _);
 
             var decrifraMessage = rsa.Decrypt(cifraMessage, RSAEncryptionPadding.Pkcs1);
+            time.Stop();
+
+            Console.WriteLine(time.ElapsedMilliseconds);
             return Encoding.UTF8.GetString(decrifraMessage);
         }
     }

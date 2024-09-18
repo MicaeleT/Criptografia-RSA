@@ -52,9 +52,9 @@ class ClienteChat
                     break;
                 }
 
-                byte[] mensagemEnviadaBytes = SignatureDigital.CifraMessage(mensagem, keyPublic);
+                //byte[] mensagemEnviadaBytes = SignatureDigital.CifraMessage(mensagem, keyPublic);
 
-                clienteSocket.Send(mensagemEnviadaBytes);
+                clienteSocket.Send(Encoding.UTF8.GetBytes(mensagem));
             }
 
             // Fechar o cliente
