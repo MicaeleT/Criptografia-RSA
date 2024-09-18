@@ -14,28 +14,27 @@ public class SignatureDigital
 {
     public static void Main(string[] args)
     {
+        //var (publicKeyBob, privateKeyBob) = GenerateKeys();
 
-        var (publicKeyBob, privateKeyBob) = GenerateKeys();
+        //var (publicKeyAlice, privateKeyAlice) = GenerateKeys();
 
-        var (publicKeyAlice, privateKeyAlice) = GenerateKeys();
+        ////SendKeyWhatsAppMessage(publicKeyBob);
 
-        //SendKeyWhatsAppMessage(publicKeyBob);
+        ////SendKeyWhatsAppMessage(publicKeyAlice);
 
-        //SendKeyWhatsAppMessage(publicKeyAlice);
+        //string message = "Mensagem do bob de teste para assinatura digital";
 
-        string message = "Mensagem do bob de teste para assinatura digital";
+        //byte[] signature = Sign(message, privateKeyBob);
+        //Console.WriteLine("Assinatura de bob: " + Convert.ToBase64String(signature));
 
-        byte[] signature = Sign(message, privateKeyBob);
-        Console.WriteLine("Assinatura de bob: " + Convert.ToBase64String(signature));
+        //bool isValid = VerifySignature(message, signature, publicKeyBob);
+        //Console.WriteLine("\nA assinatura de bob é válida? " + isValid);
 
-        bool isValid = VerifySignature(message, signature, publicKeyBob);
-        Console.WriteLine("\nA assinatura de bob é válida? " + isValid);
+        //byte[] cifraMessage = CifraMessage(message, publicKeyBob);
+        //Console.WriteLine("\nMensagem Cifrada: " + Convert.ToBase64String(cifraMessage));
 
-        byte[] cifraMessage = CifraMessage(message, publicKeyBob);
-        Console.WriteLine("\nMensagem Cifrada: " + Convert.ToBase64String(cifraMessage));
-
-        string decifraMessage = DecifraMessage(cifraMessage, privateKeyBob);
-        Console.WriteLine("\nMensagem Decifrada: " + decifraMessage);
+        //string decifraMessage = DecifraMessage(cifraMessage, privateKeyBob);
+        //Console.WriteLine("\nMensagem Decifrada: " + decifraMessage);
 
 
     }
@@ -52,24 +51,24 @@ public class SignatureDigital
         }
     }
 
-    public static void SendKeyWhatsAppMessage(string publicKey)
-    {
-        // Credenciais da Conta Twilio
-        string accountSid = "ACaeb613b70eb965d42b9e360adabeabd9";
-        string authToken = "fb2661455c5f9b148f8f041349c3aa18";      
+    //public static void SendKeyWhatsAppMessage(string publicKey)
+    //{
+    //    // Credenciais da Conta Twilio
+    //    string accountSid = "ACaeb613b70eb965d42b9e360adabeabd9";
+    //    string authToken = "fb2661455c5f9b148f8f041349c3aa18";      
 
-        // Inicializar o cliente Twilio
-        TwilioClient.Init(accountSid, authToken);
+    //    // Inicializar o cliente Twilio
+    //    TwilioClient.Init(accountSid, authToken);
 
-        var messageOptions = new CreateMessageOptions(
-        new PhoneNumber("whatsapp:+558893359502"));
-        messageOptions.From = new PhoneNumber("whatsapp:+14155238886");
-        messageOptions.Body = $"Aqui está a chave pública RSA:\n\n{publicKey}";
+    //    var messageOptions = new CreateMessageOptions(
+    //    new PhoneNumber("whatsapp:+558893359502"));
+    //    messageOptions.From = new PhoneNumber("whatsapp:+14155238886");
+    //    messageOptions.Body = $"Aqui está a chave pública RSA:\n\n{publicKey}";
 
 
-        var message = MessageResource.Create(messageOptions);
-        Console.WriteLine(message.Body);
-    }
+    //    var message = MessageResource.Create(messageOptions);
+    //    Console.WriteLine(message.Body);
+    //}
 
     public static byte[] Sign(string message, string privateKey)
     {
