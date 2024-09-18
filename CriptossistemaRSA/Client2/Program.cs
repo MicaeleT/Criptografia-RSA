@@ -17,8 +17,6 @@ class ClienteChat
         IPEndPoint endPoint = new IPEndPoint(ip, 11000);
         clienteSocket = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-
-
         try
         {
             // Conectar ao servidor
@@ -32,8 +30,8 @@ class ClienteChat
 
             (keyPublic, keyPrivate) = SignatureDigital.GenerateKeys();
 
-            Console.WriteLine(keyPublic + "\n\n");
-            Console.WriteLine(keyPrivate + "\n\n");
+            Console.WriteLine("Chave pública:\n" + keyPublic + "\n");
+            Console.WriteLine("Chave privada:\n" + keyPrivate + "\n");
 
             byte[] keyPublicBytes = Encoding.UTF8.GetBytes(keyPublic);
             clienteSocket.Send(keyPublicBytes);
@@ -54,8 +52,8 @@ class ClienteChat
                     break;
                 }
 
-                // Enviar a mensagem ao servidor
-                byte[] mensagemEnviadaBytes = Encoding.UTF8.GetBytes(mensagem);
+                byte[] mensagemEnviadaBytes = SignatureDigital.CifraMessage(mensagem, keyPublic);
+
                 clienteSocket.Send(mensagemEnviadaBytes);
             }
 
@@ -77,12 +75,14 @@ class ClienteChat
             try
             {
                 byte[] bytes = new byte[512];
-                //int bytesRecebidos = clienteSocket.Receive(bytes);
-                clienteSocket.Receive(bytes);
-                string mensagemRecebida = SignatureDigital.DecifraMessage(bytes, keyPrivate);
+                int bytesRecebidos = clienteSocket.Receive(bytes);
 
-                //string mensagemRecebida = Encoding.UTF8.GetString(bytes, 0, bytesRecebidos);
-                Console.WriteLine(mensagemRecebida);
+                byte[] mensagemCriptografada = new byte[bytesRecebidos];
+                Array.Copy(bytes, mensagemCriptografada, bytesRecebidos);
+
+                string mensagemRecebida = SignatureDigital.DecifraMessage(mensagemCriptografada, keyPrivate);
+
+                Console.WriteLine("Mensagem recebida: " + mensagemRecebida);
             }
             catch (Exception ex)
             {
